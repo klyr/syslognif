@@ -72,4 +72,3 @@ static ErlNifFunc nif_funcs[] = {
 };
 
 ERL_NIF_INIT(syslog, nif_funcs, NULL, NULL, NULL, NULL)
-
