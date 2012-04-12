@@ -35,7 +35,7 @@ THE SOFTWARE.
 const char ident[MAXBUFLEN];
 
 
-static ERL_NIF_TERM nif_open(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
+static ERL_NIF_TERM nif_openlog(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
     int option;
     int facility;
     if ((enif_get_string(env, argv[0], (char *)ident, sizeof(ident), ERL_NIF_LATIN1) < 1) ||
@@ -47,7 +47,7 @@ static ERL_NIF_TERM nif_open(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]
     return enif_make_atom(env, "ok");
 }
 
-static ERL_NIF_TERM nif_write(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
+static ERL_NIF_TERM nif_syslog(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
     char message[MAXBUFLEN];
     int log_level;
     if (!enif_get_int(env, argv[0], &log_level)) {
@@ -60,15 +60,15 @@ static ERL_NIF_TERM nif_write(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[
     return enif_make_atom(env, "ok");
 }
 
-static ERL_NIF_TERM nif_close(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
+static ERL_NIF_TERM nif_closelog(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
     closelog();
     return enif_make_atom(env, "ok");
 }
 
 static ErlNifFunc nif_funcs[] = {
-    {"open", 3, nif_open},
-    {"write", 2, nif_write},
-    {"close", 0, nif_close}
+    {"openlog", 3, nif_openlog},
+    {"syslog", 2, nif_syslog},
+    {"closelog", 0, nif_closelog}
 };
 
 ERL_NIF_INIT(syslog, nif_funcs, NULL, NULL, NULL, NULL)

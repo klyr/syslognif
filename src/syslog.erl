@@ -22,6 +22,7 @@
 %% OTHER DEALINGS IN THE SOFTWARE.
 -module(syslog).
 -export([open/1, open/3, write/2, close/0,
+         openlog/3, syslog/2, closelog/0,
          option/1, facility/1, level/1]).
 -on_load(on_load/0).
 
@@ -35,13 +36,20 @@ on_load() ->
     erlang:load_nif(Lib, 0).
 
 open(Ident) ->
-    open(Ident, option(pid) bxor option(cons), facility(user)).
+    openlog(Ident, option(pid) bxor option(cons), facility(user)).
 
-open(_,_,_) -> erlang:error(not_implemented).
+open(Ident, Options, Facility) when is_list(Options) ->
+    Opts = lists:foldl(fun(Opt, Acc) -> Acc bxor option(Opt) end, 0, Options),
+    openlog(Ident, Opts, facility(Facility)).
 
-write(_,_) -> erlang:error(not_implemented).
+write(Level, Str) ->
+    syslog(level(Level), Str).
 
-close() -> erlang:error(not_implemented).
+close() -> closelog().
+
+openlog(_,_,_) -> erlang:error(not_implemented).
+closelog() -> erlang:error(not_implemented).
+syslog(_,_) -> erlang:error(not_implemented).
 
 
 % options for openlog()
