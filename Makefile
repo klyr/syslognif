@@ -1,36 +1,26 @@
+REBAR=./rebar
 
-ERL=erl
-APP=syslog
+all: deps compile
 
-CC=gcc
+compile:
+	@$(REBAR) compile
 
-#Mac OS X: use "-m64" for a 64-bit erlang
-ARCH=-m64
+deps:
+	@$(REBAR) get-deps
 
-# By default, use the system crypt(3), which is DES only
-FLAGS=$(ARCH) -O3 -fPIC -shared
+clean:
+	@$(REBAR) clean
 
-# Linux
-#FLAGS=-fPIC -shared -lcrypt
+generate:
+	@$(REBAR) generate -f
 
-ERL_ROOT=/usr/local/lib/erlang
-CFLAGS=-g -Wall
+distclean: clean
+	@$(REBAR) delete-deps
 
+test: all
+	@$(REBAR) skip_deps=true eunit
 
-all: dir erl nif 
+docs: deps
+	@$(REBAR) skip_deps=true doc
 
-dir:
-	-@mkdir -p priv ebin
-
-erl:
-	@$(ERL) -noinput +B \
-		-eval 'case make:all() of up_to_date -> halt(0); error -> halt(1) end.'
-
-nif:
-	(cd c_src && \
-	$(CC) -g -Wall $(FLAGS) -o ../priv/$(APP).so \
-		$(APP).c -I $(ERL_ROOT)/usr/include/ )
-
-clean:  
-	@rm -fv ebin/*.beam priv/$(APP).so c_src/*.a c_src/*.o
-
+.PHONY: deps test
