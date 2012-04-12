@@ -35,7 +35,7 @@ on_load() ->
     erlang:load_nif(Lib, 0).
 
 open(Ident) ->
-    open(Ident, option(pid) bxor option(cons), level(info)).
+    open(Ident, option(pid) bxor option(cons), facility(user)).
 
 open(_,_,_) -> erlang:error(not_implemented).
 
