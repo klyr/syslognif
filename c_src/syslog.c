@@ -38,9 +38,9 @@ const char ident[MAXBUFLEN];
 static ERL_NIF_TERM nif_open(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
     int option;
     int facility;
-    if ( (enif_get_string(env, argv[0], (char *)ident, sizeof(ident), ERL_NIF_LATIN1) < 1) ||
-         !enif_get_int(env, argv[1], &option) ||
-         !enif_get_int(env, argv[2], &facility)) {
+    if ((enif_get_string(env, argv[0], (char *)ident, sizeof(ident), ERL_NIF_LATIN1) < 1) ||
+        !enif_get_int(env, argv[1], &option) ||
+        !enif_get_int(env, argv[2], &facility)) {
         return enif_make_badarg(env);
     }
     openlog(ident, option, facility);
