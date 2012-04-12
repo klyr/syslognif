@@ -27,12 +27,11 @@
 -on_load(on_load/0).
 
 on_load() ->
-    Lib = filename:join([
-            filename:dirname(code:which(?MODULE)),
-            "..",
-            "priv",
-            ?MODULE
-        ]),
+    Lib = case code:priv_dir(?MODULE) of
+              Path when is_list(Path) -> filename:join([Path, ?MODULE]);
+              _ -> filename:join([filename:dirname(code:which(?MODULE)),
+                                       "..", "priv", ?MODULE])
+          end,
     erlang:load_nif(Lib, 0).
 
 open(Ident) ->
