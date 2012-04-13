@@ -53,9 +53,10 @@ static ERL_NIF_TERM nif_syslog(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv
     if (!enif_get_int(env, argv[0], &log_level)) {
         return enif_make_badarg(env);
     }
-    if (enif_get_string(env, argv[1], message, sizeof(message), ERL_NIF_LATIN1) < 1) {
+    if (enif_get_string(env, argv[1], message, sizeof(message), ERL_NIF_LATIN1) == 0) {
         return enif_make_badarg(env);
     }
+    message[MAXBUFLEN - 1] = '\0';
     syslog(log_level, "%s", message);
     return enif_make_atom(env, "ok");
 }
